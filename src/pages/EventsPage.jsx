@@ -9,9 +9,11 @@ import {
   RadioGroup,
   Button,
   Input,
+  Center,
 } from "@chakra-ui/react";
 
 export async function loader() {
+  console.log("Firing loader");
   const fetchEvents = await fetch("http://localhost:3000/events");
   const fetchCategories = await fetch("http://localhost:3000/categories");
 
@@ -28,22 +30,32 @@ export const EventsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("");
 
-  const handleSearch = async (event) => {
-    event.preventDefault();
-    const fetchEvents = await fetch(
-      `http://localhost:3000/events?q=${searchQuery}`
-    );
+  const handleSearch = (searchString) => {
+    setSearchQuery(searchString);
+    const items = events.filter((event) => {
+      const searchData = event.description + " " + event.title;
+      return searchData
+        .toLowerCase()
+        .includes(searchString.toLocaleLowerCase());
+    });
 
-    setEventsFiltered(await fetchEvents.json());
+    if (filter !== "") {
+      setFilter("");
+    }
+    setEventsFiltered(items);
   };
 
-  const handleFilter = async (id) => {
-    const fetchEvent = await fetch(
-      `http://localhost:3000/events?categoryIds_like=${id}`
+  const handleFilter = (id) => {
+    const items = events.filter((event) =>
+      event.categoryIds.includes(Number(id))
     );
 
+    if (searchQuery !== "") {
+      setSearchQuery("");
+    }
+
+    setEventsFiltered(items);
     setFilter(id);
-    setEventsFiltered(await fetchEvent.json());
   };
 
   const handleReset = () => {
@@ -51,6 +63,8 @@ export const EventsPage = () => {
     setSearchQuery("");
     setFilter("");
   };
+
+  //
 
   return (
     <Box>
@@ -70,19 +84,14 @@ export const EventsPage = () => {
           ))}
         </RadioGroup>
 
-        <form onSubmit={handleSearch}>
-          <Flex justifyContent={"center"} columnGap={"0.25em"}>
-            <Input
-              value={searchQuery}
-              placeholder="Type to search.."
-              onChange={(e) => setSearchQuery(e.target.value)}
-              width={"400px"}
-            />
-            <Button type="submit" size="md">
-              Search
-            </Button>
-          </Flex>
-        </form>
+        <Center>
+          <Input
+            value={searchQuery}
+            placeholder="Type to search.."
+            onChange={(e) => handleSearch(e.target.value)}
+            width={"400px"}
+          />
+        </Center>
 
         <Button onClick={handleReset}>Show all events</Button>
       </Flex>
