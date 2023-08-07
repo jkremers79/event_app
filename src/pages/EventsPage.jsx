@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { EventCard } from "../components/EventCard";
 import { useLoaderData, Link } from "react-router-dom";
 import {
@@ -21,26 +21,10 @@ export async function loader() {
   };
 }
 
-export const reducerFn = (eventsState, action) => {
-  switch (action.type) {
-    case "filter":
-      return action.events;
-    case "search":
-      return action.events;
-    case "reset":
-      return action.events;
-
-    default:
-      "";
-  }
-};
-
 export const EventsPage = () => {
-  const { events } = useLoaderData();
-  const { categories } = useLoaderData();
+  const { events, categories } = useLoaderData();
 
-  const [eventsState, dispatch] = useReducer(reducerFn, events);
-
+  const [eventsFiltered, setEventsFiltered] = useState(events);
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("");
 
@@ -50,7 +34,7 @@ export const EventsPage = () => {
       `http://localhost:3000/events?q=${searchQuery}`
     );
 
-    dispatch({ type: "search", events: await fetchEvents.json() });
+    setEventsFiltered(await fetchEvents.json());
   };
 
   const handleFilter = async (id) => {
@@ -59,11 +43,13 @@ export const EventsPage = () => {
     );
 
     setFilter(id);
-    dispatch({ type: "filter", events: await fetchEvent.json() });
+    setEventsFiltered(await fetchEvent.json());
   };
 
   const handleReset = () => {
-    dispatch({ type: "reset", events });
+    setEventsFiltered(events);
+    setSearchQuery("");
+    setFilter("");
   };
 
   return (
@@ -77,7 +63,8 @@ export const EventsPage = () => {
         <Heading>List of events</Heading>
         <RadioGroup value={Number(filter)} onChange={handleFilter}>
           {categories.map((category) => (
-            <Radio key={category.id} value={Number(category.id)}>
+            <Radio key={category.id} value={category.id}>
+              {" "}
               {category.name}
             </Radio>
           ))}
@@ -106,7 +93,7 @@ export const EventsPage = () => {
         alignItems={"center"}
         justifyContent={"center"}
       >
-        {eventsState.map((event) => (
+        {eventsFiltered.map((event) => (
           <EventCard key={event.id} event={event} categories={categories} />
         ))}
       </Flex>
