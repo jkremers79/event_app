@@ -11,10 +11,10 @@ export const EventCard = ({ event, categories }) => {
           alignItems={"center"}
           className="event"
           padding={"1rem"}
-          border={"solid hsl(220, 9%, 15%) 2px"}
-          borderRadius={"20px"}
+          borderRadius={"50px"}
           marginBottom={"1rem"}
           background={"hsl(0, 0%, 96%)"}
+          // boxShadow={"-20px -20px 60px #bebebe"}
         >
           <Heading size={"md"}>{event.title}</Heading>
           <Text>{event.description}</Text>
