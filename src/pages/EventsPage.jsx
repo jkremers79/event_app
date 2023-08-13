@@ -29,7 +29,11 @@ import {
 
 export const EventsPage = () => {
   const { events, categories, users } = useLoaderData();
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -105,6 +109,13 @@ export const EventsPage = () => {
     }
   };
 
+  const minDate = new Date().toISOString().slice(0, 16);
+
+  const date = new Date();
+  const maxYear = date.getFullYear() + 3;
+  const dateNoYear = date.toISOString().slice(4, 16);
+  const maxDate = maxYear + dateNoYear;
+
   return (
     <Box>
       <Flex
@@ -164,86 +175,135 @@ export const EventsPage = () => {
           <ModalCloseButton />
           <ModalBody>
             <form onSubmit={handleSubmit(onFormSubmit)}>
-              <FormLabel>Title of event</FormLabel>
-              <Input
-                type="text"
-                {...register("title", { required: true })}
-                placeholder="Title of event"
-                marginBottom={"1rem"}
-              />
+              <Flex direction={"column"} rowGap={"1rem"}>
+                <Box>
+                  <FormLabel htmlFor="title">Title of event</FormLabel>
+                  <Input
+                    type="text"
+                    id="title"
+                    {...register("title", { required: true })}
+                    placeholder="Title of event"
+                  />
+                  {errors.title && (
+                    <span style={{ color: "red" }}>This field is required</span>
+                  )}
+                </Box>
 
-              <FormLabel>Description</FormLabel>
-              <Input
-                type="text"
-                {...register("description", { required: true })}
-                placeholder="Describe the event"
-                marginBottom={"1rem"}
-              />
+                <Box>
+                  <FormLabel htmlFor="desciption">Description</FormLabel>
+                  <Input
+                    type="text"
+                    id="desciption"
+                    {...register("description", { required: true })}
+                    placeholder="Describe the event"
+                  />
+                  {errors.description && (
+                    <span style={{ color: "red" }}>This field is required</span>
+                  )}
+                </Box>
 
-              <FormLabel>Image</FormLabel>
-              <Input
-                type="text"
-                {...register("image", { required: true })}
-                placeholder="Provide a hyperlink of the image"
-                marginBottom={"1rem"}
-              />
+                <Box>
+                  <FormLabel htmlFor="image-link">Image</FormLabel>
+                  <Input
+                    id="image-link"
+                    type="text"
+                    {...register("image", { required: true })}
+                    placeholder="Provide a hyperlink of the image"
+                  />
+                  {errors.image && (
+                    <span style={{ color: "red" }}>This field is required</span>
+                  )}
+                </Box>
 
-              <FormLabel>Location</FormLabel>
-              <Input
-                type="text"
-                {...register("location", { required: true })}
-                placeholder="Event location"
-                marginBottom={"1rem"}
-              />
+                <Box>
+                  <FormLabel htmlFor="location">Location</FormLabel>
+                  <Input
+                    type="text"
+                    id="location"
+                    {...register("location", { required: true })}
+                    placeholder="Event location"
+                  />
+                  {errors.location && (
+                    <span style={{ color: "red" }}>This field is required</span>
+                  )}
+                </Box>
 
-              <FormLabel>Start time</FormLabel>
-              <Input
-                type="datetime-local"
-                {...register("startTime", { required: true })}
-                placeholder="Event location"
-                marginBottom={"1rem"}
-              />
+                <Box>
+                  <FormLabel htmlFor="start-time">Start time</FormLabel>
+                  <Input
+                    type="datetime-local"
+                    id="start-time"
+                    min={minDate}
+                    max={maxDate}
+                    {...register("startTime", {
+                      required: true,
+                    })}
+                    placeholder="Event location"
+                  />
+                  {errors.startTime && (
+                    <span style={{ color: "red" }}>This field is required</span>
+                  )}
+                </Box>
 
-              <FormLabel>End time</FormLabel>
-              <Input
-                type="datetime-local"
-                {...register("endTime", { required: true })}
-                placeholder="Event location"
-                marginBottom={"1rem"}
-              />
+                <Box>
+                  <FormLabel htmlFor="end-time">End time</FormLabel>
+                  <Input
+                    type="datetime-local"
+                    id="end time"
+                    min={minDate}
+                    max={maxDate}
+                    {...register("endTime", { required: true })}
+                    placeholder="Event location"
+                  />
+                  {errors.endTime && (
+                    <span style={{ color: "red" }}>This field is required</span>
+                  )}
+                </Box>
 
-              <HStack spacing="1rem" marginBottom={"1rem"}>
-                {categories.map((category) => (
-                  <Checkbox
-                    key={category.id}
-                    {...register("categoryIds", { required: true })}
-                    value={category.id}
+                <Box>
+                  <HStack spacing="1rem">
+                    {categories.map((category) => (
+                      <Checkbox
+                        key={category.id}
+                        {...register("categoryIds", { required: true })}
+                        value={category.id}
+                      >
+                        {category.name}
+                      </Checkbox>
+                    ))}
+                  </HStack>
+                  {errors.categoryIds && (
+                    <span style={{ color: "red" }}>This field is required</span>
+                  )}
+                </Box>
+
+                <Box>
+                  <Select
+                    placeholder="Select event organiser"
+                    {...register("createdBy", { required: true })}
                   >
-                    {category.name}
-                  </Checkbox>
-                ))}
-              </HStack>
+                    {users.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.name}
+                      </option>
+                    ))}
+                  </Select>
+                  {errors.createdBy && (
+                    <span style={{ color: "red" }}>This field is required</span>
+                  )}
+                </Box>
 
-              <Select
-                placeholder="Select event organiser"
-                {...register("createdBy", { required: true })}
-              >
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.name}
-                  </option>
-                ))}
-              </Select>
-              <Center>
-                <Button
-                  colorScheme="blue"
-                  type="submit"
-                  marginTop={"1rem"}
-                  marginBottom={"1rem"}
-                >
-                  Add event
-                </Button>
-              </Center>
+                <Center>
+                  <Button
+                    colorScheme="green"
+                    type="submit"
+                    marginTop={"1rem"}
+                    marginBottom={"1rem"}
+                  >
+                    Add event
+                  </Button>
+                </Center>
+              </Flex>
             </form>
           </ModalBody>
         </ModalContent>

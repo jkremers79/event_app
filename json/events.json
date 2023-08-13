@@ -64,20 +64,6 @@
       "location": "Shavasana Yoga School",
       "startTime": "2023-03-09T06:00:00.000Z",
       "endTime": "2023-03-09T07:00:00.000Z"
-    },
-    {
-      "title": "Test event",
-      "description": "Tester the tester!",
-      "image": "http://forget-it.jpg",
-      "location": "Yo momma house",
-      "startTime": "2024-09-20T10:00",
-      "endTime": "2024-09-21T12:00",
-      "categoryIds": [
-        1,
-        2
-      ],
-      "createdBy": 1,
-      "id": 5
     }
   ],
   "categories": [
