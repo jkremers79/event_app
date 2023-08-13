@@ -1,6 +1,7 @@
 import React, { useContext, useState, useRef } from "react";
+import { ApplicationData } from "../components/Root";
 
-import { useLoaderData, Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   Heading,
   Box,
@@ -17,15 +18,29 @@ import {
 } from "@chakra-ui/react";
 
 export const EventPage = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef();
+  const { users, events, categories } = useContext(ApplicationData);
 
-  const { event, users } = useLoaderData();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
+  const {
+    isOpen: isFormOpen,
+    onOpen: onFormOpen,
+    onClose: onFormClose,
+  } = useDisclosure();
+
+  const cancelRef = useRef();
   const toast = useToast();
+
+  const { eventId } = useParams();
+  const selectedEventId = Number(eventId);
+  const selectedEvent = events.find((event) => event.id === selectedEventId);
 
   const handleDelete = async () => {
     const deleteEvent = await fetch(
-      `http://localhost:3000/events/${event.id}`,
+      `http://localhost:3000/events/${selectedEventId}`,
       {
         method: "DELETE",
       }
@@ -46,22 +61,22 @@ export const EventPage = () => {
     }
   };
 
-  const eventCreator = users.find((user) => user.id === event.createdBy);
-
-  console.log(eventCreator);
+  const eventCreator = users.find(
+    (user) => user.id === selectedEvent.createdBy
+  );
 
   return (
     <Box>
       <Heading>Event</Heading>
 
-      <Button colorScheme="red" onClick={onOpen}>
+      <Button colorScheme="red" onClick={onDeleteOpen}>
         Delete event
       </Button>
 
       <AlertDialog
-        isOpen={isOpen}
+        isOpen={isDeleteOpen}
         leastDestructiveRef={cancelRef}
-        onClose={onClose}
+        onClose={onDeleteClose}
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
@@ -74,7 +89,7 @@ export const EventPage = () => {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onDeleteClose}>
                 Cancel
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
@@ -87,16 +102,3 @@ export const EventPage = () => {
     </Box>
   );
 };
-
-//loader function
-export async function loader({ params }) {
-  const fetchEvent = await fetch(
-    `http://localhost:3000/events/${params.eventId}`
-  );
-  const fetchUsers = await fetch(`http://localhost:3000/users/`);
-
-  return {
-    event: await fetchEvent.json(),
-    users: await fetchUsers.json(),
-  };
-}

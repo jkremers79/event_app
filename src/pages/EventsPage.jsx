@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { EventCard } from "../components/EventCard";
 import { useLoaderData } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { ApplicationData } from "../components/Root";
 import {
   Heading,
   Box,
@@ -28,7 +29,8 @@ import {
 } from "@chakra-ui/react";
 
 export const EventsPage = () => {
-  const { events, categories, users } = useLoaderData();
+  const { events, categories, users } = useContext(ApplicationData);
+
   const {
     register,
     formState: { errors },
@@ -311,17 +313,3 @@ export const EventsPage = () => {
     </Box>
   );
 };
-
-//loader function
-export async function loader() {
-  console.log("Firing loader");
-  const fetchEvents = await fetch("http://localhost:3000/events");
-  const fetchCategories = await fetch("http://localhost:3000/categories");
-  const fetchUsers = await fetch(`http://localhost:3000/users/`);
-
-  return {
-    events: await fetchEvents.json(),
-    categories: await fetchCategories.json(),
-    users: await fetchUsers.json(),
-  };
-}

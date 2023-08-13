@@ -1,32 +1,24 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import React, { createContext } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
-import { EventPage, loader as postLoader } from "./pages/EventPage";
-import {
-  EventsPage,
-  loader as postListLoader,
-  // action as newPostAction,
-} from "./pages/EventsPage";
+import { EventPage } from "./pages/EventPage";
+import { EventsPage } from "./pages/EventsPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { useContext } from "react";
-import { Root } from "./components/Root";
+import { Root, loader as AppDataLoader } from "./components/Root";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    loader: AppDataLoader,
     children: [
       {
         path: "/",
         element: <EventsPage />,
-        loader: postListLoader,
-        // action: newPostAction,
       },
       {
         path: "/event/:eventId",
         element: <EventPage />,
-        loader: postLoader,
-        // action: addComment,
       },
     ],
   },
