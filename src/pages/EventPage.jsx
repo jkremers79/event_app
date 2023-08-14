@@ -1,7 +1,7 @@
 import React, { useContext, useState, useRef } from "react";
 import { ApplicationData } from "../components/Root";
 import { useForm } from "react-hook-form";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLoaderData } from "react-router-dom";
 import {
   Heading,
   Box,
@@ -16,8 +16,6 @@ import {
   AlertDialogOverlay,
   AlertDialogCloseButton,
   Flex,
-  Radio,
-  RadioGroup,
   Input,
   Center,
   FormControl,
@@ -35,17 +33,14 @@ import {
 } from "@chakra-ui/react";
 
 export const EventPage = () => {
-  const { users, events, categories } = useContext(ApplicationData);
+  const { users, categories } = useContext(ApplicationData);
+  const event = useLoaderData();
   const navigate = useNavigate();
 
-  const { eventId } = useParams();
-  const selectedEventId = Number(eventId);
-  const selectedEvent = events.find((event) => event.id === selectedEventId);
-  const eventCreator = users.find(
-    (user) => user.id === selectedEvent.createdBy
-  );
+  const eventCreator = users.find((user) => user.id === event.createdBy);
 
-  console.log(selectedEvent);
+  console.log(eventCreator);
+  console.log(event);
 
   const {
     register,
@@ -53,13 +48,13 @@ export const EventPage = () => {
     handleSubmit,
   } = useForm({
     defaultValues: {
-      title: selectedEvent.title,
-      description: selectedEvent.description,
-      image: selectedEvent.image,
-      location: selectedEvent.location,
-      startTime: selectedEvent.startTime,
-      endTime: selectedEvent.endTime,
-      createdBy: selectedEvent.createdBy,
+      title: event.title,
+      description: event.description,
+      image: event.image,
+      location: event.location,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      createdBy: event.createdBy,
     },
   });
 
@@ -79,7 +74,7 @@ export const EventPage = () => {
 
   const handleDelete = async () => {
     const deleteEvent = await fetch(
-      `http://localhost:3000/events/${selectedEventId}`,
+      `http://localhost:3000/events/${event.id}`,
       {
         method: "DELETE",
       }
@@ -93,7 +88,6 @@ export const EventPage = () => {
       });
       onDeleteClose();
       navigate("/");
-      window.location.reload();
     } else {
       toast({
         title: "Error",
@@ -313,3 +307,13 @@ export const EventPage = () => {
     </Box>
   );
 };
+
+export async function loader({ params }) {
+  console.log("Firing eventLoader");
+  const fetchEvents = await fetch(
+    `http://localhost:3000/events/${params.eventId}`
+  );
+  const event = await fetchEvents.json();
+
+  return event;
+}

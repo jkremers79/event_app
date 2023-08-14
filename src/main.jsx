@@ -1,8 +1,8 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { EventPage } from "./pages/EventPage";
-import { EventsPage } from "./pages/EventsPage";
+import { EventPage, loader as eventLoader } from "./pages/EventPage";
+import { EventsPage, loader as postListLoader } from "./pages/EventsPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Root, loader as AppDataLoader } from "./components/Root";
 
@@ -15,10 +15,12 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <EventsPage />,
+        loader: postListLoader,
       },
       {
         path: "/event/:eventId",
         element: <EventPage />,
+        loader: eventLoader,
       },
     ],
   },

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { EventCard } from "../components/EventCard";
-import { Link, useLoaderData, redirect } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { ApplicationData } from "../components/Root";
 import {
@@ -29,7 +29,10 @@ import {
 } from "@chakra-ui/react";
 
 export const EventsPage = () => {
-  const { events, categories, users } = useContext(ApplicationData);
+  const { users, categories } = useContext(ApplicationData);
+  const events = useLoaderData();
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -102,6 +105,8 @@ export const EventsPage = () => {
       body: JSON.stringify(newData),
     });
 
+    console.log(newPost);
+
     if (newPost.ok) {
       toast({
         status: "success",
@@ -111,7 +116,7 @@ export const EventsPage = () => {
         isClosable: true,
       });
       onClose();
-      window.location.reload();
+      navigate("/event/2");
     }
   };
 
@@ -321,3 +326,11 @@ export const EventsPage = () => {
     </Box>
   );
 };
+
+export async function loader() {
+  console.log("Firing postListLoader");
+  const fetchEvents = await fetch("http://localhost:3000/events");
+  const events = await fetchEvents.json();
+
+  return events;
+}

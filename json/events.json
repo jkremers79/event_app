@@ -64,6 +64,20 @@
       "location": "Shavasana Yoga School",
       "startTime": "2023-03-09T06:00:00.000Z",
       "endTime": "2023-03-09T07:00:00.000Z"
+    },
+    {
+      "title": "sds",
+      "description": "sdf",
+      "image": "sdf",
+      "location": "sdf",
+      "startTime": "2024-04-20T10:00",
+      "endTime": "2024-04-20T11:00",
+      "categoryIds": [
+        2,
+        3
+      ],
+      "createdBy": 1,
+      "id": 5
     }
   ],
   "categories": [
