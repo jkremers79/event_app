@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { EventCard } from "../components/EventCard";
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { ApplicationData } from "../components/Root";
 import {
@@ -36,6 +36,7 @@ export const EventsPage = () => {
     formState: { errors },
     handleSubmit,
   } = useForm();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -103,11 +104,14 @@ export const EventsPage = () => {
 
     if (newPost.ok) {
       toast({
+        status: "success",
         title: "Succes",
         description: "Event was added",
         duration: 10000,
         isClosable: true,
       });
+      onClose();
+      window.location.reload();
     }
   };
 
@@ -251,7 +255,7 @@ export const EventsPage = () => {
                   <FormLabel htmlFor="end-time">End time</FormLabel>
                   <Input
                     type="datetime-local"
-                    id="end time"
+                    id="end-time"
                     min={minDate}
                     max={maxDate}
                     {...register("endTime", { required: true })}
@@ -263,10 +267,12 @@ export const EventsPage = () => {
                 </Box>
 
                 <Box>
+                  <FormLabel htmlFor="categories">Categories</FormLabel>
                   <HStack spacing="1rem">
                     {categories.map((category) => (
                       <Checkbox
                         key={category.id}
+                        id="categories"
                         {...register("categoryIds", { required: true })}
                         value={category.id}
                       >
@@ -280,7 +286,9 @@ export const EventsPage = () => {
                 </Box>
 
                 <Box>
+                  <FormLabel htmlFor="organiser">Select an organiser</FormLabel>
                   <Select
+                    id="organiser"
                     placeholder="Select event organiser"
                     {...register("createdBy", { required: true })}
                   >

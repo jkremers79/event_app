@@ -7,12 +7,7 @@ import { createContext } from "react";
 export const ApplicationData = createContext(null);
 
 export const Root = () => {
-  const { users, events, categories } = useLoaderData();
-
-  const user = {
-    firstName: "John",
-    lastName: "Doe",
-  };
+  const { events, users, categories } = useLoaderData();
 
   return (
     <Box>
