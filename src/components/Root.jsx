@@ -7,12 +7,12 @@ import { createContext } from "react";
 export const ApplicationData = createContext(null);
 
 export const Root = () => {
-  const { events, users, categories } = useLoaderData();
+  const { users, categories } = useLoaderData();
 
   return (
     <Box>
       <Navigation />
-      <ApplicationData.Provider value={{ users, events, categories }}>
+      <ApplicationData.Provider value={{ users, categories }}>
         <Outlet />
       </ApplicationData.Provider>
     </Box>

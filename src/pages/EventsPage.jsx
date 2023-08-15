@@ -32,8 +32,6 @@ export const EventsPage = () => {
   const { users, categories } = useContext(ApplicationData);
   const events = useLoaderData();
 
-  const navigate = useNavigate();
-
   const {
     register,
     formState: { errors },
@@ -41,6 +39,7 @@ export const EventsPage = () => {
   } = useForm();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
   const toast = useToast();
 
   const [eventsFiltered, setEventsFiltered] = useState(events);
@@ -97,27 +96,34 @@ export const EventsPage = () => {
       categoryIds: categoryIds,
     };
 
-    const newPost = await fetch("http://localhost:3000/events", {
+    await fetch("http://localhost:3000/events", {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
       body: JSON.stringify(newData),
-    });
-
-    console.log(newPost);
-
-    if (newPost.ok) {
-      toast({
-        status: "success",
-        title: "Succes",
-        description: "Event was added",
-        duration: 10000,
-        isClosable: true,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Something went wrong");
+        } else {
+          toast({
+            status: "success",
+            title: "Succes",
+            description: "Event was added",
+            duration: 10000,
+            isClosable: true,
+          });
+          return response.json();
+        }
+      })
+      .then((data) => {
+        onClose();
+        navigate(`/event/${data.id}`);
+      })
+      .catch((e) => {
+        window.alert(e);
       });
-      onClose();
-      navigate("/event/2");
-    }
   };
 
   const minDate = new Date().toISOString().slice(0, 16);
