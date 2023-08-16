@@ -14,7 +14,6 @@ export const EventCard = ({ event, categories }) => {
           borderRadius={"50px"}
           marginBottom={"1rem"}
           background={"hsl(0, 0%, 96%)"}
-          // boxShadow={"-20px -20px 60px #bebebe"}
         >
           <Heading size={"md"}>{event.title}</Heading>
           <Text>{event.description}</Text>

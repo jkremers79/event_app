@@ -34,13 +34,15 @@ export const EventPage = () => {
   const { users, categories } = useContext(ApplicationData);
   const event = useLoaderData();
   const navigate = useNavigate();
+  const cancelRef = useRef();
+  const toast = useToast();
 
   const eventOrganiser = users.find((user) => user.id === event.createdBy);
 
-  // console.log(eventCreator);
-  // console.log(event);
-
-  console.log(event.categoryIds);
+  //these values need to be changed in order to be displayed correctly as defaultValues in the form.
+  const categoryiDs = event.categoryIds.map((id) => String(id));
+  const startTime = event.startTime.slice(0, 16);
+  const endTime = event.endTime.slice(0, 16);
 
   const {
     register,
@@ -52,10 +54,10 @@ export const EventPage = () => {
       description: event.description,
       image: event.image,
       location: event.location,
-      startTime: event.startTime,
-      endTime: event.endTime,
+      startTime: startTime,
+      endTime: endTime,
       createdBy: event.createdBy,
-      categoryIds: true,
+      categoryIds: categoryiDs,
     },
   });
 
@@ -69,9 +71,6 @@ export const EventPage = () => {
     onOpen: onFormOpen,
     onClose: onFormClose,
   } = useDisclosure();
-
-  const cancelRef = useRef();
-  const toast = useToast();
 
   const handleDelete = async () => {
     const deleteEvent = await fetch(
@@ -99,9 +98,6 @@ export const EventPage = () => {
   };
 
   const onFormSubmit = async (data) => {
-    // console.log("data");
-    // console.log(data);
-
     const categoryIds = data.categoryIds.map((id) => Number(id));
     const userId = Number(data.createdBy);
 
@@ -111,8 +107,6 @@ export const EventPage = () => {
       categoryIds: categoryIds,
     };
 
-    // console.log("newData");
-    // console.log(newData);
     await fetch(`http://localhost:3000/events/${event.id}`, {
       method: "PATCH",
       headers: {
@@ -140,19 +134,6 @@ export const EventPage = () => {
         navigate("/");
       }
     });
-    // .then(() => {
-    //   onFormClose();
-    //   window.location.reload();
-    // })
-    // .catch((stat) => {
-    //   toast({
-    //     status: "error",
-    //     title: "Error",
-    //     description: stat,
-    //     duration: 10000,
-    //     isClosable: true,
-    //   });
-    // });
   };
 
   const minDate = new Date().toISOString().slice(0, 16);

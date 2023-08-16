@@ -147,12 +147,14 @@ export const EventsPage = () => {
       >
         <Heading>List of events</Heading>
         <RadioGroup value={Number(categoryFilter)} onChange={handleFilter}>
-          {categories.map((category) => (
-            <Radio key={category.id} value={category.id}>
-              {" "}
-              {category.name}
-            </Radio>
-          ))}
+          <HStack spacing={"1rem"}>
+            {categories.map((category) => (
+              <Radio key={category.id} value={category.id}>
+                {" "}
+                {category.name}
+              </Radio>
+            ))}
+          </HStack>
         </RadioGroup>
 
         <Center>
