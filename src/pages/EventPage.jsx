@@ -1,7 +1,7 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { ApplicationData } from "../components/Root";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useLoaderData } from "react-router-dom";
+import { useNavigate, useLoaderData } from "react-router-dom";
 import {
   Heading,
   Box,
@@ -18,12 +18,10 @@ import {
   Flex,
   Input,
   Center,
-  FormControl,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   Checkbox,
   FormLabel,
@@ -37,10 +35,12 @@ export const EventPage = () => {
   const event = useLoaderData();
   const navigate = useNavigate();
 
-  const eventCreator = users.find((user) => user.id === event.createdBy);
+  const eventOrganiser = users.find((user) => user.id === event.createdBy);
 
-  console.log(eventCreator);
-  console.log(event);
+  // console.log(eventCreator);
+  // console.log(event);
+
+  console.log(event.categoryIds);
 
   const {
     register,
@@ -55,6 +55,7 @@ export const EventPage = () => {
       startTime: event.startTime,
       endTime: event.endTime,
       createdBy: event.createdBy,
+      categoryIds: true,
     },
   });
 
@@ -78,26 +79,29 @@ export const EventPage = () => {
       {
         method: "DELETE",
       }
-    );
-
-    if (deleteEvent.ok) {
-      toast({
-        title: "Succes",
-        status: "success",
-        description: "Event deleted succesfully",
-      });
-      onDeleteClose();
-      navigate("/");
-    } else {
-      toast({
-        title: "Error",
-        status: "error",
-        description: "Something went wrong, event couldn't be deleted",
-      });
-    }
+    ).then((response) => {
+      if (!response.ok) {
+        toast({
+          status: "error",
+          title: "Event couldn't be deleted: ",
+          description: `http-${response.status} ${response.statusText} `,
+        });
+      } else {
+        toast({
+          title: "Succes",
+          status: "success",
+          description: "Event deleted succesfully",
+        });
+        onDeleteClose();
+        navigate("/");
+      }
+    });
   };
 
   const onFormSubmit = async (data) => {
+    // console.log("data");
+    // console.log(data);
+
     const categoryIds = data.categoryIds.map((id) => Number(id));
     const userId = Number(data.createdBy);
 
@@ -107,7 +111,48 @@ export const EventPage = () => {
       categoryIds: categoryIds,
     };
 
-    console.log(newData);
+    // console.log("newData");
+    // console.log(newData);
+    await fetch(`http://localhost:3000/events/${event.id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(newData),
+    }).then((response) => {
+      if (!response.ok) {
+        toast({
+          status: "error",
+          title: "Event couldn't be updated",
+          description: `http-${response.status}: ${response.statusText}`,
+          duration: 10000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          status: "success",
+          title: "Succes",
+          description: "Event has been updated",
+          duration: 10000,
+          isClosable: true,
+        });
+        onFormClose();
+        navigate("/");
+      }
+    });
+    // .then(() => {
+    //   onFormClose();
+    //   window.location.reload();
+    // })
+    // .catch((stat) => {
+    //   toast({
+    //     status: "error",
+    //     title: "Error",
+    //     description: stat,
+    //     duration: 10000,
+    //     isClosable: true,
+    //   });
+    // });
   };
 
   const minDate = new Date().toISOString().slice(0, 16);

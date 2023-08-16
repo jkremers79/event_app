@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { EventCard } from "../components/EventCard";
-import { Link, useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { ApplicationData } from "../components/Root";
 import {
@@ -12,12 +12,10 @@ import {
   Button,
   Input,
   Center,
-  FormControl,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   useDisclosure,
   useToast,
@@ -105,7 +103,7 @@ export const EventsPage = () => {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Something went wrong");
+          throw new Error(`${response.status} ${response.statusText}`);
         } else {
           toast({
             status: "success",
@@ -121,8 +119,14 @@ export const EventsPage = () => {
         onClose();
         navigate(`/event/${data.id}`);
       })
-      .catch((e) => {
-        window.alert(e);
+      .catch((error) => {
+        toast({
+          status: "error",
+          title: "Error while creating event",
+          description: `${error}`,
+          duration: 10000,
+          isClosable: true,
+        });
       });
   };
 
