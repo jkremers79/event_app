@@ -40,44 +40,61 @@ export const EventsPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const [eventsFiltered, setEventsFiltered] = useState(events);
+  const [filteredEvents, setFilteredEvents] = useState(events);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
 
   // Functions for filtering events displayed on screen
   const handleSearch = (searchString) => {
     setSearchQuery(searchString);
+
     const items = events.filter((event) => {
-      const searchData = event.description + " " + event.title;
-      return searchData
+      //const searchData = event.description + " " + event.title;
+      return event.title
         .toLowerCase()
         .includes(searchString.toLocaleLowerCase());
     });
 
-    // reset the categoryFilter state, it is not used with search
+    setFilteredEvents(items);
+
+    //reset the categoryFilter when the user is typing in search input
     if (categoryFilter !== "") {
       setCategoryFilter("");
     }
-
-    setEventsFiltered(items);
   };
 
   const handleFilter = (id) => {
     setCategoryFilter(id);
-    const items = events.filter((event) =>
-      event.categoryIds.includes(Number(id))
-    );
 
-    // reset the searchQuery state, it is not used with the filter
-    if (searchQuery !== "") {
-      setSearchQuery("");
+    // If the categoryFilter useState is not empty, the filtering needs to be done on the unfiltered event items from the loader function.
+    //  Otherwise the filtering will be executed on top of a previous filtering.
+
+    if (categoryFilter === "") {
+      const items = filteredEvents.filter((event) => {
+        return event.categoryIds.includes(Number(id));
+      });
+      setFilteredEvents(items);
+    } else if (searchQuery !== "") {
+      const items = events
+        .filter((event) => {
+          return event.categoryIds.includes(Number(id));
+        })
+        .filter((event) => {
+          return event.title
+            .toLowerCase()
+            .includes(searchQuery.toLocaleLowerCase());
+        });
+      setFilteredEvents(items);
+    } else {
+      const items = events.filter((event) => {
+        return event.categoryIds.includes(Number(id));
+      });
+      setFilteredEvents(items);
     }
-
-    setEventsFiltered(items);
   };
 
   const handleReset = () => {
-    setEventsFiltered(events);
+    setFilteredEvents(events);
     setSearchQuery("");
     setCategoryFilter("");
   };
@@ -137,6 +154,9 @@ export const EventsPage = () => {
   const dateNoYear = date.toISOString().slice(4, 16);
   const maxDate = maxYear + dateNoYear;
 
+  console.log(categoryFilter);
+  console.log(searchQuery);
+
   return (
     <Box>
       <Flex
@@ -185,7 +205,7 @@ export const EventsPage = () => {
         alignItems={"center"}
         justifyContent={"center"}
       >
-        {eventsFiltered.map((event) => (
+        {filteredEvents.map((event) => (
           <EventCard key={event.id} event={event} categories={categories} />
         ))}
       </Flex>
