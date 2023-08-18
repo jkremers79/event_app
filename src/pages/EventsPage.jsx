@@ -48,25 +48,56 @@ export const EventsPage = () => {
   const handleSearch = (searchString) => {
     setSearchQuery(searchString);
 
-    const items = events.filter((event) => {
-      //const searchData = event.description + " " + event.title;
-      return event.title
-        .toLowerCase()
-        .includes(searchString.toLocaleLowerCase());
-    });
+    // const items = events.filter((event) => {
+    //   return event.title.toLowerCase().includes(searchString.toLowerCase());
+    // });
 
-    setFilteredEvents(items);
+    // setFilteredEvents(items);
 
     //reset the categoryFilter when the user is typing in search input
-    if (categoryFilter !== "") {
-      setCategoryFilter("");
+    // if (categoryFilter !== "") {
+    //   setCategoryFilter("");
+    // }
+
+    if (categoryFilter === "") {
+      const items = events.filter((event) => {
+        return event.title.toLowerCase().includes(searchString.toLowerCase());
+      });
+      setFilteredEvents(items);
+      // } else if (searchQuery !== "") {
+      //   const items = events
+      //     .filter((event) => {
+      //       return event.categoryIds.includes(Number(id));
+      //     })
+      //     .filter((event) => {
+      //       return event.title
+      //         .toLowerCase()
+      //         .includes(searchString.toLocaleLowerCase());
+      //     });
+      // setFilteredEvents(items);
+    } else {
+      console.log("test");
+      console.log(searchString);
+      const items = events
+        .filter((event) => {
+          return event.categoryIds.includes(Number(categoryFilter));
+        })
+        .filter((event) => {
+          return event.title.toLowerCase().includes(searchString.toLowerCase());
+        });
+      console.log(items);
+      setFilteredEvents(items);
+      // const items = events.filter((event) => {
+      //   return event.categoryIds.includes(Number(id));
+      // });
+      // setFilteredEvents(items);
     }
   };
 
   const handleFilter = (id) => {
     setCategoryFilter(id);
 
-    // If the categoryFilter useState is not empty, the filtering needs to be done on the unfiltered event items from the loader function.
+    // If the categoryFilter useState is not empty, the filtering needs to be done on the unfiltered items from the loader function.
     //  Otherwise the filtering will be executed on top of a previous filtering.
 
     if (categoryFilter === "") {
@@ -80,9 +111,7 @@ export const EventsPage = () => {
           return event.categoryIds.includes(Number(id));
         })
         .filter((event) => {
-          return event.title
-            .toLowerCase()
-            .includes(searchQuery.toLocaleLowerCase());
+          return event.title.toLowerCase().includes(searchQuery.toLowerCase());
         });
       setFilteredEvents(items);
     } else {
@@ -149,13 +178,10 @@ export const EventsPage = () => {
 
   const minDate = new Date().toISOString().slice(0, 16);
 
-  const date = new Date();
-  const maxYear = date.getFullYear() + 3;
-  const dateNoYear = date.toISOString().slice(4, 16);
-  const maxDate = maxYear + dateNoYear;
-
-  console.log(categoryFilter);
-  console.log(searchQuery);
+  // const date = new Date();
+  // const maxYear = date.getFullYear() + 3;
+  // const dateNoYear = date.toISOString().slice(4, 16);
+  // const maxDate = maxYear + dateNoYear;
 
   return (
     <Box>
@@ -276,16 +302,22 @@ export const EventsPage = () => {
                   <Input
                     type="datetime-local"
                     id="start-time"
-                    min={minDate}
-                    max={maxDate}
                     {...register("startTime", {
-                      required: true,
+                      required: "This field is required",
+                      min: {
+                        value: minDate,
+                        message: "Cannot enter a date in the past",
+                      },
+                      pattern: {
+                        value: /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/,
+                        message: "Invalid date input",
+                      },
                     })}
                     placeholder="Event location"
                   />
-                  {errors.startTime && (
-                    <span style={{ color: "red" }}>This field is required</span>
-                  )}
+                  <span style={{ color: "red" }}>
+                    {errors.startTime?.message}
+                  </span>
                 </Box>
 
                 <Box>
@@ -293,14 +325,22 @@ export const EventsPage = () => {
                   <Input
                     type="datetime-local"
                     id="end-time"
-                    min={minDate}
-                    max={maxDate}
-                    {...register("endTime", { required: true })}
+                    {...register("endTime", {
+                      required: "This field is required",
+                      min: {
+                        value: minDate,
+                        message: "Cannot enter a date in the past",
+                      },
+                      pattern: {
+                        value: /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/,
+                        message: "Invalid date input",
+                      },
+                    })}
                     placeholder="Event location"
                   />
-                  {errors.endTime && (
-                    <span style={{ color: "red" }}>This field is required</span>
-                  )}
+                  <span style={{ color: "red" }}>
+                    {errors.endTime?.message}{" "}
+                  </span>
                 </Box>
 
                 <Box>

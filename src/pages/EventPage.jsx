@@ -73,12 +73,9 @@ export const EventPage = () => {
   } = useDisclosure();
 
   const handleDelete = async () => {
-    const deleteEvent = await fetch(
-      `http://localhost:3000/events/${event.id}`,
-      {
-        method: "DELETE",
-      }
-    ).then((response) => {
+    await fetch(`http://localhost:3000/events/${event.id}`, {
+      method: "DELETE",
+    }).then((response) => {
       if (!response.ok) {
         toast({
           status: "error",
@@ -138,10 +135,10 @@ export const EventPage = () => {
 
   const minDate = new Date().toISOString().slice(0, 16);
 
-  const date = new Date();
-  const maxYear = date.getFullYear() + 3;
-  const dateNoYear = date.toISOString().slice(4, 16);
-  const maxDate = maxYear + dateNoYear;
+  // const date = new Date();
+  // const maxYear = date.getFullYear() + 3;
+  // const dateNoYear = date.toISOString().slice(4, 16);
+  // const maxDate = maxYear + dateNoYear;
 
   return (
     <Box>
@@ -162,7 +159,7 @@ export const EventPage = () => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Add an event</ModalHeader>
+          <ModalHeader>Edit event</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <form onSubmit={handleSubmit(onFormSubmit)}>
@@ -224,16 +221,22 @@ export const EventPage = () => {
                   <Input
                     type="datetime-local"
                     id="start-time"
-                    min={minDate}
-                    max={maxDate}
                     {...register("startTime", {
-                      required: true,
+                      required: "This field is required",
+                      min: {
+                        value: minDate,
+                        message: "Cannot enter a date in the past",
+                      },
+                      pattern: {
+                        value: /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/,
+                        message: "Invalid date input",
+                      },
                     })}
                     placeholder="Event location"
                   />
-                  {errors.startTime && (
-                    <span style={{ color: "red" }}>This field is required</span>
-                  )}
+                  <span style={{ color: "red" }}>
+                    {errors.startTime?.message}
+                  </span>
                 </Box>
 
                 <Box>
@@ -241,14 +244,22 @@ export const EventPage = () => {
                   <Input
                     type="datetime-local"
                     id="end-time"
-                    min={minDate}
-                    max={maxDate}
-                    {...register("endTime", { required: true })}
+                    {...register("endTime", {
+                      required: "This field is required",
+                      min: {
+                        value: minDate,
+                        message: "Cannot enter a date in the past",
+                      },
+                      pattern: {
+                        value: /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/,
+                        message: "Invalid date input",
+                      },
+                    })}
                     placeholder="Event location"
                   />
-                  {errors.endTime && (
-                    <span style={{ color: "red" }}>This field is required</span>
-                  )}
+                  <span style={{ color: "red" }}>
+                    {errors.endTime?.message}{" "}
+                  </span>
                 </Box>
 
                 <Box>
