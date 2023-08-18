@@ -48,36 +48,12 @@ export const EventsPage = () => {
   const handleSearch = (searchString) => {
     setSearchQuery(searchString);
 
-    // const items = events.filter((event) => {
-    //   return event.title.toLowerCase().includes(searchString.toLowerCase());
-    // });
-
-    // setFilteredEvents(items);
-
-    //reset the categoryFilter when the user is typing in search input
-    // if (categoryFilter !== "") {
-    //   setCategoryFilter("");
-    // }
-
     if (categoryFilter === "") {
       const items = events.filter((event) => {
         return event.title.toLowerCase().includes(searchString.toLowerCase());
       });
       setFilteredEvents(items);
-      // } else if (searchQuery !== "") {
-      //   const items = events
-      //     .filter((event) => {
-      //       return event.categoryIds.includes(Number(id));
-      //     })
-      //     .filter((event) => {
-      //       return event.title
-      //         .toLowerCase()
-      //         .includes(searchString.toLocaleLowerCase());
-      //     });
-      // setFilteredEvents(items);
     } else {
-      console.log("test");
-      console.log(searchString);
       const items = events
         .filter((event) => {
           return event.categoryIds.includes(Number(categoryFilter));
@@ -85,12 +61,8 @@ export const EventsPage = () => {
         .filter((event) => {
           return event.title.toLowerCase().includes(searchString.toLowerCase());
         });
-      console.log(items);
+
       setFilteredEvents(items);
-      // const items = events.filter((event) => {
-      //   return event.categoryIds.includes(Number(id));
-      // });
-      // setFilteredEvents(items);
     }
   };
 
@@ -400,7 +372,6 @@ export const EventsPage = () => {
 };
 
 export async function loader() {
-  console.log("Firing postListLoader");
   const fetchEvents = await fetch("http://localhost:3000/events");
   const events = await fetchEvents.json();
 

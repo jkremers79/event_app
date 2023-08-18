@@ -346,7 +346,6 @@ export const EventPage = () => {
 };
 
 export async function loader({ params }) {
-  console.log("Firing eventLoader");
   const fetchEvents = await fetch(
     `http://localhost:3000/events/${params.eventId}`
   );

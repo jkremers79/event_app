@@ -20,7 +20,6 @@ export const Root = () => {
 };
 
 export async function loader() {
-  console.log("Firing loader");
   const fetchCategories = await fetch("http://localhost:3000/categories");
   const fetchUsers = await fetch(`http://localhost:3000/users/`);
 

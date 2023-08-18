@@ -2,6 +2,15 @@ import { Link } from "react-router-dom";
 import { Box, Heading, Text, Flex, Tag, Image } from "@chakra-ui/react";
 
 export const EventCard = ({ event, categories }) => {
+  const firstDate = event.startTime.split("T");
+  const secondDate = event.endTime.split("T");
+
+  const startDate = firstDate[0].split("-").reverse().join("/");
+  const startTime = firstDate[1].slice(0, 5);
+
+  const endDate = secondDate[0].split("-").reverse().join("/");
+  const endTime = secondDate[1].slice(0, 5);
+
   return (
     <Box width={"400px"} height={"auto"}>
       <Link to={`/event/${event.id}`}>
@@ -18,14 +27,8 @@ export const EventCard = ({ event, categories }) => {
           <Heading size={"md"}>{event.title}</Heading>
           <Text>{event.description}</Text>
           <Box>
-            <Text>
-              Starts: {event.startTime.slice(0, 10)} at{" "}
-              {event.startTime.slice(11, 16)}
-            </Text>
-            <Text>
-              Ends: {event.endTime.slice(0, 10)} at{" "}
-              {event.endTime.slice(11, 16)}
-            </Text>
+            <Text>{`Starts: ${startDate} at ${startTime}`}</Text>
+            <Text>{`Ends: ${endDate} at ${endTime}`}</Text>
           </Box>
           <Image
             src={event.image}
