@@ -135,11 +135,6 @@ export const EventPage = () => {
 
   const minDate = new Date().toISOString().slice(0, 16);
 
-  // const date = new Date();
-  // const maxYear = date.getFullYear() + 3;
-  // const dateNoYear = date.toISOString().slice(4, 16);
-  // const maxDate = maxYear + dateNoYear;
-
   return (
     <Box>
       <Heading>Event</Heading>
@@ -229,7 +224,7 @@ export const EventPage = () => {
                       },
                       pattern: {
                         value: /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/,
-                        message: "Invalid date input",
+                        message: "Invalid date selected",
                       },
                     })}
                     placeholder="Event location"
@@ -252,7 +247,7 @@ export const EventPage = () => {
                       },
                       pattern: {
                         value: /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/,
-                        message: "Invalid date input",
+                        message: "Invalid date selected",
                       },
                     })}
                     placeholder="Event location"

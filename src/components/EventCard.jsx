@@ -2,14 +2,14 @@ import { Link } from "react-router-dom";
 import { Box, Heading, Text, Flex, Tag, Image } from "@chakra-ui/react";
 
 export const EventCard = ({ event, categories }) => {
-  const firstDate = event.startTime.split("T");
-  const secondDate = event.endTime.split("T");
+  const startDateTime = event.startTime.split("T");
+  const endDateTime = event.endTime.split("T");
 
-  const startDate = firstDate[0].split("-").reverse().join("/");
-  const startTime = firstDate[1].slice(0, 5);
+  const startDate = startDateTime[0].split("-").reverse().join("/");
+  const startTime = startDateTime[1].slice(0, 5);
 
-  const endDate = secondDate[0].split("-").reverse().join("/");
-  const endTime = secondDate[1].slice(0, 5);
+  const endDate = endDateTime[0].split("-").reverse().join("/");
+  const endTime = endDateTime[1].slice(0, 5);
 
   return (
     <Box width={"400px"} height={"auto"}>
@@ -20,9 +20,9 @@ export const EventCard = ({ event, categories }) => {
           alignItems={"center"}
           className="event"
           padding={"1rem"}
-          borderRadius={"50px"}
           marginBottom={"1rem"}
           background={"hsl(0, 0%, 96%)"}
+          borderRadius={"50px"}
         >
           <Heading size={"md"}>{event.title}</Heading>
           <Text>{event.description}</Text>
@@ -41,6 +41,7 @@ export const EventCard = ({ event, categories }) => {
               .filter((category) => event.categoryIds.includes(category.id))
               .map((category) => (
                 <Tag
+                  colorScheme="blue"
                   key={category.id}
                   marginLeft={"0.25em"}
                   marginRight={"0.25em"}

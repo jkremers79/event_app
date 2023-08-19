@@ -150,11 +150,6 @@ export const EventsPage = () => {
 
   const minDate = new Date().toISOString().slice(0, 16);
 
-  // const date = new Date();
-  // const maxYear = date.getFullYear() + 3;
-  // const dateNoYear = date.toISOString().slice(4, 16);
-  // const maxDate = maxYear + dateNoYear;
-
   return (
     <Box>
       <Flex
@@ -163,7 +158,6 @@ export const EventsPage = () => {
         alignItems={"center"}
         marginBottom="0.5em"
       >
-        <Heading>List of events</Heading>
         <RadioGroup value={Number(categoryFilter)} onChange={handleFilter}>
           <HStack spacing={"1rem"}>
             {categories.map((category) => (
@@ -180,6 +174,7 @@ export const EventsPage = () => {
             value={searchQuery}
             placeholder="Type to search.."
             onChange={(e) => handleSearch(e.target.value)}
+            background={"hsl(0, 0%, 96%)"}
             width={"400px"}
           />
         </Center>
@@ -195,6 +190,9 @@ export const EventsPage = () => {
             Add new event
           </Button>
         </Box>
+        <Heading marginTop={"1rem"} marginBottom={"1rem"}>
+          Events list
+        </Heading>
       </Flex>
 
       <Flex
@@ -282,7 +280,7 @@ export const EventsPage = () => {
                       },
                       pattern: {
                         value: /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/,
-                        message: "Invalid date input",
+                        message: "Invalid date selected",
                       },
                     })}
                     placeholder="Event location"
@@ -305,7 +303,7 @@ export const EventsPage = () => {
                       },
                       pattern: {
                         value: /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/,
-                        message: "Invalid date input",
+                        message: "Invalid date selected",
                       },
                     })}
                     placeholder="Event location"
