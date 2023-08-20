@@ -12,7 +12,7 @@ export const EventCard = ({ event, categories }) => {
   const endTime = endDateTime[1].slice(0, 5);
 
   return (
-    <Box width={"400px"} height={"auto"}>
+    <Box width={{ base: "275px", md: "400px" }} height={"auto"}>
       <Link to={`/event/${event.id}`}>
         <Flex
           rowGap={"0.5rem"}
@@ -32,8 +32,8 @@ export const EventCard = ({ event, categories }) => {
           </Box>
           <Image
             src={event.image}
-            width={"300px"}
-            height={"300px"}
+            width={{ base: "250px", md: "300px" }}
+            height={{ base: "250px", md: "300px" }}
             objectFit={"cover"}
           />
           <Box>

@@ -5,6 +5,7 @@ import { EventPage, loader as eventLoader } from "./pages/EventPage";
 import { EventsPage, loader as postListLoader } from "./pages/EventsPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Root, loader as AppDataLoader } from "./components/Root";
+import { PageNotFound } from "./pages/PageNotFound";
 
 const theme = extendTheme({
   fonts: {
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <Root />,
     loader: AppDataLoader,
+    errorElement: <PageNotFound />,
     children: [
       {
         path: "/",

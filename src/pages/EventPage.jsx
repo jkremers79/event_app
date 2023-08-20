@@ -28,6 +28,9 @@ import {
   Select,
   HStack,
   ModalCloseButton,
+  Text,
+  Image,
+  Tag,
 } from "@chakra-ui/react";
 
 export const EventPage = () => {
@@ -41,8 +44,8 @@ export const EventPage = () => {
 
   //these values need to be changed in order to be displayed correctly as defaultValues in the form.
   const categoryiDs = event.categoryIds.map((id) => String(id));
-  const startTime = event.startTime.slice(0, 16);
-  const endTime = event.endTime.slice(0, 16);
+  const eventStartTime = event.startTime.slice(0, 16);
+  const eventEndTime = event.endTime.slice(0, 16);
 
   const {
     register,
@@ -54,8 +57,8 @@ export const EventPage = () => {
       description: event.description,
       image: event.image,
       location: event.location,
-      startTime: startTime,
-      endTime: endTime,
+      startTime: eventStartTime,
+      endTime: eventEndTime,
       createdBy: event.createdBy,
       categoryIds: categoryiDs,
     },
@@ -123,28 +126,93 @@ export const EventPage = () => {
         toast({
           status: "success",
           title: "Succes",
-          description: "Event has been updated",
+          description:
+            "Event has been updated, page will refresh in a few seconds",
           duration: 10000,
           isClosable: true,
         });
         onFormClose();
-        navigate("/");
+        setTimeout(() => {
+          location.reload();
+        }, 3000);
       }
     });
   };
 
   const minDate = new Date().toISOString().slice(0, 16);
 
+  const startDateTime = event.startTime.split("T");
+  const endDateTime = event.endTime.split("T");
+
+  const startDate = startDateTime[0].split("-").reverse().join("/");
+  const startTime = startDateTime[1].slice(0, 5);
+
+  const endDate = endDateTime[0].split("-").reverse().join("/");
+  const endTime = endDateTime[1].slice(0, 5);
+
   return (
     <Box>
-      <Heading>Event</Heading>
+      <Flex
+        background={"hsl(210, 16%, 98%)"}
+        boxShadow={"-20px -20px 60px hsl(210, 11%, 83%)"}
+        maxW={{ sm: "95%", md: "80%" }}
+        margin={"auto"}
+        padding={"2rem"}
+        borderRadius={"3rem"}
+        direction={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        rowGap={"1rem"}
+      >
+        <Heading>{event.title}</Heading>
+        <Text>{event.description}</Text>
 
-      <Button colorScheme="red" onClick={onDeleteOpen}>
-        Delete event
-      </Button>
-      <Button colorScheme="blue" onClick={onFormOpen}>
-        Edit event
-      </Button>
+        <Image
+          src={event.image}
+          maxW={{ base: "90%", sm: "80%", md: "75%", xl: "50%" }}
+          borderRadius={"2rem"}
+        />
+
+        <HStack>
+          {categories
+            .filter((category) => event.categoryIds.includes(category.id))
+            .map((category) => (
+              <Tag key={category.id} colorScheme="blue">
+                {category.name}
+              </Tag>
+            ))}
+        </HStack>
+
+        <Box>
+          <Text>{`Starts: ${startDate} at ${startTime}`}</Text>
+          <Text>{`Ends: ${endDate} at ${endTime}`}</Text>
+        </Box>
+
+        <Image
+          src={eventOrganiser.image}
+          maxW={{ base: "35%", md: "25%", lg: "15%", xl: "10%" }}
+          borderRadius={"50%"}
+        />
+        <Text>Event organised by {eventOrganiser.name}</Text>
+
+        <Flex width={"75vW"} direction={"row"} justifyContent={"center"}>
+          <Button
+            colorScheme="green"
+            onClick={onFormOpen}
+            size={{ base: "sm", md: "md" }}
+          >
+            Edit event
+          </Button>
+          <Button
+            colorScheme="red"
+            onClick={onDeleteOpen}
+            marginLeft={"3vW"}
+            size={{ base: "sm", md: "md" }}
+          >
+            Delete event
+          </Button>
+        </Flex>
+      </Flex>
 
       {/* Modal used to display the editEventForm */}
       <Modal
@@ -297,8 +365,9 @@ export const EventPage = () => {
                   <Button
                     colorScheme="green"
                     type="submit"
-                    marginTop={"1rem"}
-                    marginBottom={"1rem"}
+                    marginTop={"2vW"}
+                    marginBottom={"2vW"}
+                    size={{ base: "sm", md: "md" }}
                   >
                     Update event
                   </Button>
@@ -308,6 +377,8 @@ export const EventPage = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
+
+      {/* //////////////// */}
 
       <AlertDialog
         isOpen={isDeleteOpen}
@@ -326,10 +397,19 @@ export const EventPage = () => {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onDeleteClose}>
+              <Button
+                ref={cancelRef}
+                onClick={onDeleteClose}
+                size={{ base: "sm", md: "md" }}
+              >
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={handleDelete} ml={3}>
+              <Button
+                colorScheme="red"
+                onClick={handleDelete}
+                ml={3}
+                size={{ base: "sm", md: "md" }}
+              >
                 Delete
               </Button>
             </AlertDialogFooter>
@@ -341,10 +421,11 @@ export const EventPage = () => {
 };
 
 export async function loader({ params }) {
-  const fetchEvents = await fetch(
+  console.log("Firing event loader");
+  const fetchEvent = await fetch(
     `http://localhost:3000/events/${params.eventId}`
   );
-  const event = await fetchEvents.json();
+  const event = await fetchEvent.json();
 
   return event;
 }

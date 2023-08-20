@@ -8,7 +8,12 @@ export const Navigation = () => {
       <ul>
         <li>
           <Center>
-            <ChakraLink as={ReactRouterLink} to="/" marginBottom={"0.5rem"}>
+            <ChakraLink
+              marginTop={"1vH"}
+              marginBottom={"2vH"}
+              as={ReactRouterLink}
+              to="/"
+            >
               Show list of events
             </ChakraLink>
           </Center>

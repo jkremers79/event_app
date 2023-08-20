@@ -36,7 +36,11 @@ export const EventsPage = () => {
     handleSubmit,
   } = useForm();
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isFormOpen,
+    onOpen: onFormOpen,
+    onClose: onFormClose,
+  } = useDisclosure();
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -134,7 +138,7 @@ export const EventsPage = () => {
         }
       })
       .then((data) => {
-        onClose();
+        onFormClose();
         navigate(`/event/${data.id}`);
       })
       .catch((error) => {
@@ -161,7 +165,11 @@ export const EventsPage = () => {
         <RadioGroup value={Number(categoryFilter)} onChange={handleFilter}>
           <HStack spacing={"1rem"}>
             {categories.map((category) => (
-              <Radio key={category.id} value={category.id}>
+              <Radio
+                colorScheme={"linkedin"}
+                key={category.id}
+                value={category.id}
+              >
                 {" "}
                 {category.name}
               </Radio>
@@ -175,7 +183,7 @@ export const EventsPage = () => {
             placeholder="Type to search.."
             onChange={(e) => handleSearch(e.target.value)}
             background={"hsl(0, 0%, 96%)"}
-            width={"400px"}
+            width={{ base: "250px", md: "400px" }}
           />
         </Center>
 
@@ -183,13 +191,21 @@ export const EventsPage = () => {
           <Button
             onClick={handleReset}
             isDisabled={!categoryFilter && !searchQuery}
+            size={{ base: "sm", md: "md" }}
+            colorScheme="linkedin"
           >
-            Show all events
+            Reset filters
           </Button>
-          <Button onClick={onOpen} marginLeft={"0.5rem"}>
+          <Button
+            onClick={onFormOpen}
+            marginLeft={"0.5rem"}
+            size={{ base: "sm", md: "md" }}
+            colorScheme="linkedin"
+          >
             Add new event
           </Button>
         </Box>
+
         <Heading marginTop={"1rem"} marginBottom={"1rem"}>
           Events list
         </Heading>
@@ -200,6 +216,7 @@ export const EventsPage = () => {
         columnGap={"1rem"}
         alignItems={"center"}
         justifyContent={"center"}
+        margin={"0 2vw 0 2vW"}
       >
         {filteredEvents.map((event) => (
           <EventCard key={event.id} event={event} categories={categories} />
@@ -207,7 +224,11 @@ export const EventsPage = () => {
       </Flex>
 
       {/* Modal used to display the addEventForm */}
-      <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+      <Modal
+        closeOnOverlayClick={false}
+        isOpen={isFormOpen}
+        onClose={onFormClose}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Add an event</ModalHeader>
