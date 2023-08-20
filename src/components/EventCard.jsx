@@ -12,7 +12,7 @@ export const EventCard = ({ event, categories }) => {
   const endTime = endDateTime[1].slice(0, 5);
 
   return (
-    <Box width={{ base: "275px", md: "400px" }} height={"auto"}>
+    <Box width={{ base: "325px", md: "400px" }} height={"auto"}>
       <Link to={`/event/${event.id}`}>
         <Flex
           rowGap={"0.5rem"}

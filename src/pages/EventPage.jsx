@@ -155,7 +155,7 @@ export const EventPage = () => {
       <Flex
         background={"hsl(210, 16%, 98%)"}
         boxShadow={"-20px -20px 60px hsl(210, 11%, 83%)"}
-        maxW={{ sm: "95%", md: "80%" }}
+        maxW={{ base: "95%", md: "80%" }}
         margin={"auto"}
         padding={"2rem"}
         borderRadius={"3rem"}
@@ -421,7 +421,6 @@ export const EventPage = () => {
 };
 
 export async function loader({ params }) {
-  console.log("Firing event loader");
   const fetchEvent = await fetch(
     `http://localhost:3000/events/${params.eventId}`
   );
